@@ -1,0 +1,17 @@
+# コンパイルされたクラスファイル
+*.class
+bin/
+out/
+build/
+
+# エディタやIDEの設定ファイル（IntelliJ IDEA, VSCode, Eclipseなど）
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+
+# OSの一時ファイル
+.DS_Store
+Thumbs.db
