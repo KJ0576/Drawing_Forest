@@ -61,6 +61,9 @@ public class ClientHandler implements Runnable {
                     case Protocol.ROOM_JOIN:
                         RoomManager.handleJoinRoom(this, data);
                         break;
+                    case Protocol.ROOM_LIST_REQUEST:
+                        RoomManager.handleRoomListRequest(this);
+                        break;
 
                     // ==========================================
                     // Bさんの領域 (お絵描き座標)
@@ -103,6 +106,8 @@ public class ClientHandler implements Runnable {
     // クローズ処理の共通化
     private void closeConnection() {
         System.out.println("closing...");
+        RoomManager.removeClient(this);
+        DrawManager.removeClient(this);
         try {
             if (in != null) in.close();
             if (out != null) out.close();

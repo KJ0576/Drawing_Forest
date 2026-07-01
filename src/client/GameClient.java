@@ -43,7 +43,11 @@ public class GameClient {
                     // 【クライアント側のswitch文】A, B, CのControllerへ分配
                     switch (command) {
                         case Protocol.ROOM_CREATED_NOTIFY:
-                            RoomController.onRoomUpdate(data);
+                        case Protocol.ROOM_JOINED_NOTIFY:
+                        case Protocol.ROOM_LIST:
+                        case Protocol.ROOM_MEMBERS:
+                        case Protocol.ROOM_ERROR:
+                            RoomController.onRoomMessage(command, data);
                             break;
                         case Protocol.DRAW_RECEIVED:
                             DrawController.onDrawReceived(data);
