@@ -15,9 +15,11 @@ public class Protocol {
     public static final String DRAW_DATA   = "DRAW_DATA";         // 引数: 部屋ID, X1,Y1,X2,Y2,色
     public static final String DRAW_RECEIVED = "DRAW_RCV";        // サーバーからの他プレイヤーへの転送
     
-    // C: ゲーム進行・判定関連コマンド
-    public static final String GAME_START  = "GAME_START";        // 引数: 部屋ID
-    public static final String GAME_ROUND_START = "G_R_START";    // サーバーから: 役割(役割コード, お題文字列※描く人のみ)
-    public static final String CHAT_SUBMIT = "CHAT_SUBMIT";       // 引数: 部屋ID, 発言内容
-    public static final String GAME_SCORE_UPDATE = "G_SCORE";     // サーバーから: スコアデータ一覧
+   // C: ゲーム進行・判定関連コマンド
+public static final String GAME_START  = "GAME_START";        // 引数: 部屋ID
+public static final String GAME_ROUND_START = "G_R_START";    // サーバーから: 役割(役割コード, お題文字列※描く人のみ)
+public static final String CHAT_SUBMIT = "CHAT_SUBMIT";       // 引数: 部屋ID, 発言内容
+public static final String GAME_JUDGE_RESULT = "G_JUDGE";     // サーバーから: ユーザー名,CORRECT/WRONG,発言内容
+public static final String GAME_SCORE_UPDATE = "G_SCORE";     // サーバーから: スコアデータ一覧
+public static final String GAME_ROUND_END = "G_R_END";        // サーバーから: 正解のお題
 }

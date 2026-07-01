@@ -50,9 +50,11 @@ public class RoomManager {
 
         client.sendMessage(Protocol.ROOM_CREATED_NOTIFY + ":" + request.roomName + ",成功");
         client.sendMessage(Protocol.ROOM_JOINED_NOTIFY + ":" + request.roomName + ",成功");
+
         if (previousRoom != null) {
             broadcastMembers(previousRoom);
         }
+
         broadcastMembers(request.roomName);
         broadcastRoomList();
     }
@@ -78,13 +80,16 @@ public class RoomManager {
                 sendRoomList(client);
                 return;
             }
+
             previousRoom = moveClientToRoomLocked(client, room, userName);
         }
 
         client.sendMessage(Protocol.ROOM_JOINED_NOTIFY + ":" + request.roomName + ",成功");
+
         if (previousRoom != null) {
             broadcastMembers(previousRoom);
         }
+
         broadcastMembers(request.roomName);
         broadcastRoomList();
     }
@@ -98,16 +103,21 @@ public class RoomManager {
         knownClients.remove(client);
 
         String oldRoomName;
+
         synchronized (roomLock) {
             oldRoomName = clientRooms.remove(client);
+
             if (oldRoomName != null) {
                 Room oldRoom = rooms.get(oldRoomName);
+
                 if (oldRoom != null) {
                     oldRoom.removeMember(client);
+
                     if (oldRoom.isEmpty()) {
                         rooms.remove(oldRoomName);
                     }
                 }
+
                 DrawManager.leaveRoom(oldRoomName, client);
             }
         }
@@ -126,6 +136,18 @@ public class RoomManager {
         return new ArrayList<>(room.members);
     }
 
+    // C担当用：同じ部屋にいる全員へ任意のメッセージを送信する
+    public static void broadcastToRoom(String roomName, String message) {
+        Room room = rooms.get(roomName);
+        if (room == null) {
+            return;
+        }
+
+        for (ClientHandler member : room.members) {
+            member.sendMessage(message);
+        }
+    }
+
     public static String getRoomOf(ClientHandler client) {
         return clientRooms.get(client);
     }
@@ -134,14 +156,18 @@ public class RoomManager {
         client.setUserName(userName);
 
         String oldRoomName = clientRooms.get(client);
+
         if (oldRoomName != null && !oldRoomName.equals(room.name)) {
             Room oldRoom = rooms.get(oldRoomName);
+
             if (oldRoom != null) {
                 oldRoom.removeMember(client);
+
                 if (oldRoom.isEmpty()) {
                     rooms.remove(oldRoomName);
                 }
             }
+
             DrawManager.leaveRoom(oldRoomName, client);
         } else {
             oldRoomName = null;
@@ -150,6 +176,7 @@ public class RoomManager {
         room.addMember(client);
         clientRooms.put(client, room.name);
         DrawManager.joinRoom(room.name, client);
+
         return oldRoomName;
     }
 
@@ -157,6 +184,7 @@ public class RoomManager {
         String[] parts = (data == null) ? new String[0] : data.split(",", 2);
         String roomName = parts.length > 0 ? parts[0].trim() : "";
         String userName = parts.length > 1 ? parts[1].trim() : "";
+
         return new RoomRequest(roomName, userName);
     }
 
@@ -164,35 +192,44 @@ public class RoomManager {
         if (roomName == null || roomName.trim().isEmpty()) {
             return "部屋名を入力してください";
         }
+
         if (roomName.length() > MAX_ROOM_NAME_LENGTH) {
             return "部屋名は" + MAX_ROOM_NAME_LENGTH + "文字以内にしてください";
         }
+
         if (hasProtocolDelimiter(roomName)) {
             return "部屋名に : , ; | は使えません";
         }
+
         return null;
     }
 
     private static String normalizeUserName(String requestedName, ClientHandler client) {
         String name = requestedName;
+
         if (name == null || name.trim().isEmpty()) {
             name = client.getUserName();
         }
+
         if (name == null || name.trim().isEmpty() || "Anonymous".equals(name)) {
             name = "Player";
         }
 
         name = name.trim();
+
         StringBuilder normalized = new StringBuilder();
+
         for (int i = 0; i < name.length(); i++) {
             char c = name.charAt(i);
             normalized.append(isProtocolDelimiter(c) ? '_' : c);
         }
 
         String result = normalized.toString();
+
         if (result.length() > MAX_USER_NAME_LENGTH) {
             result = result.substring(0, MAX_USER_NAME_LENGTH);
         }
+
         return result;
     }
 
@@ -202,6 +239,7 @@ public class RoomManager {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -219,6 +257,7 @@ public class RoomManager {
 
     private static void broadcastRoomList() {
         String message = Protocol.ROOM_LIST + ":" + buildRoomListData();
+
         for (ClientHandler client : knownClients) {
             client.sendMessage(message);
         }
@@ -229,19 +268,23 @@ public class RoomManager {
         sortedRooms.sort(Comparator.comparing(room -> room.name));
 
         List<String> entries = new ArrayList<>();
+
         for (Room room : sortedRooms) {
             entries.add(room.name + "," + room.memberCount());
         }
+
         return String.join(";", entries);
     }
 
     private static void broadcastMembers(String roomName) {
         Room room = rooms.get(roomName);
+
         if (room == null) {
             return;
         }
 
         String message = Protocol.ROOM_MEMBERS + ":" + roomName + "," + String.join("|", room.memberNames());
+
         for (ClientHandler member : room.members) {
             member.sendMessage(message);
         }
@@ -275,9 +318,11 @@ public class RoomManager {
 
         private List<String> memberNames() {
             List<String> names = new ArrayList<>();
+
             for (ClientHandler member : members) {
                 names.add(member.getUserName());
             }
+
             return names;
         }
     }
