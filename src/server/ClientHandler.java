@@ -106,6 +106,7 @@ public class ClientHandler implements Runnable {
     // クローズ処理の共通化
     private void closeConnection() {
         System.out.println("closing...");
+        GameManager.removeClient(this);
         RoomManager.removeClient(this);
         DrawManager.removeClient(this);
         try {
