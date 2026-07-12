@@ -22,4 +22,7 @@ public static final String CHAT_SUBMIT = "CHAT_SUBMIT";       // 引数: 部屋I
 public static final String GAME_JUDGE_RESULT = "G_JUDGE";     // サーバーから: ユーザー名,CORRECT/WRONG,発言内容
 public static final String GAME_SCORE_UPDATE = "G_SCORE";     // サーバーから: スコアデータ一覧
 public static final String GAME_ROUND_END = "G_R_END";        // サーバーから: 正解のお題
+public static final String CHAT_BROADCAST = "CHAT_BROADCAST";　// C: チャット共有・タイマー・ゲーム終了
+public static final String GAME_TIME_UPDATE = "G_TIME";// サーバーから: 残り秒数
+public static final String GAME_END = "GAME_END";// サーバーから: 最終スコアデータ一覧
 }
